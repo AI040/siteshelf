@@ -1,0 +1,6 @@
+[server]
+# Keep in sync with MAX_UPLOAD_MB (in MB)
+maxUploadSize = 20
+
+[browser]
+gatherUsageStats = false
