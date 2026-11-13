@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL, make_url
 
 
 class Settings(BaseSettings):
@@ -41,7 +41,10 @@ class Settings(BaseSettings):
     @property
     def sqlalchemy_url(self) -> str | URL:
         if self.database_url:
-            return self.database_url
+            url = make_url(self.database_url)
+            if url.drivername in {"postgres", "postgresql"}:
+                url = url.set(drivername="postgresql+psycopg2")
+            return url
         # URL.create escapes special characters in the password for us
         return URL.create(
             "postgresql+psycopg2",

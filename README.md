@@ -68,7 +68,7 @@ curl -F "file=@websites.xlsx" http://127.0.0.1:8000/api/v1/websites/upload
 
 ## Deploy on Streamlit
 
-Point Streamlit at `streamlit_app.py`. On Streamlit Community Cloud, put the same keys as `.env.example`in the app's *Secrets* (e.g. `DB_HOST = "..."`); top-level secrets are exposed as environment variables, which is what `app/core/config.py` reads. The database must be reachable from the internet (or via an allowed IP), so prefer a read-write user limited to this table.
+Point Streamlit at `streamlit_app.py`. On Streamlit Community Cloud, put the same keys as `.env.example`in the app's *Secrets* (e.g. `DATABASE_URL = "postgresql://..."`); top-level secrets are exposed as environment variables, which is what `app/core/config.py` reads. Plain `postgresql://` and `postgres://` URLs use the installed `psycopg2` driver. The database must be reachable from the internet (or via an allowed IP), so prefer a read-write user limited to this table.
 
 ## Tests
 
