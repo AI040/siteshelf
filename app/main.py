@@ -13,12 +13,14 @@ from app.api.routes import health, upload
 from app.core.config import get_settings
 from app.core.database import get_engine
 from app.core.exceptions import AppError
+from app.core.init_db import init_db
 from app.core.logging_config import setup_logging
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     setup_logging(get_settings().log_level)
+    init_db()
     yield
     get_engine().dispose()
 

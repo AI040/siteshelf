@@ -38,11 +38,13 @@ cp .env.example .env                                   # then fill in the DB_* v
 
 ### Database
 
-Verify the existing database target (this only checks `website.website_info` and does not create or modify database objects):
+Initialize the database target:
 
 ```bash
 python -m app.core.init_db
 ```
+
+This creates the `website` schema and `website.website_info` table if they are missing. Both the FastAPI and Streamlit apps run this initialization on startup. The database user in `DATABASE_URL` must have permission to create schemas and tables. Existing tables are not modified; use a migration if their columns do not match the application.
 
 Existing `websites` table (from the earlier script), bring it in line with this version:
 

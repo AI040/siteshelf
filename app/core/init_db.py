@@ -1,26 +1,25 @@
-"""Verify that the existing database target is accessible.
+"""Create the required database schema and table if they do not exist.
 
-This application must not create or alter database objects. The expected
-PostgreSQL target is website.website_info.
+Existing tables are left unchanged; this is not a schema migration.
 
     python -m app.core.init_db
 """
 
 import app.models  # noqa: F401  (registers the ORM model)
-from sqlalchemy import inspect
+from sqlalchemy import schema
+from sqlalchemy.engine import Engine
 
-from app.core.database import get_engine
+from app.core.database import Base, get_engine
 
 
-def init_db() -> None:
-    engine = get_engine()
-    inspector = inspect(engine)
-    if "website" not in inspector.get_schema_names():
-        raise RuntimeError("Required PostgreSQL schema 'website' does not exist")
-    if not inspector.has_table("website_info", schema="website"):
-        raise RuntimeError("Required table 'website.website_info' does not exist")
+def init_db(engine: Engine | None = None) -> None:
+    """Create the ``website`` schema and registered tables when missing."""
+    engine = engine or get_engine()
+    with engine.begin() as connection:
+        connection.execute(schema.CreateSchema("website", if_not_exists=True))
+    Base.metadata.create_all(engine)
 
 
 if __name__ == "__main__":
     init_db()
-    print("Verified existing database target: website.website_info")
+    print("Database initialized: website.website_info is ready")
