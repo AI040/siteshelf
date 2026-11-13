@@ -9,6 +9,7 @@ import os
 import streamlit as st
 
 from app.core.config import get_settings
+from app.core.init_db import init_db
 
 # Streamlit Cloud secrets are not automatically read by the pydantic settings loader.
 for key in (
@@ -26,6 +27,14 @@ for key in (
 
 # Must be the first Streamlit command
 st.set_page_config(page_title=get_settings().app_name, page_icon="📥", layout="centered")
+
+
+@st.cache_resource
+def initialize_database() -> None:
+    init_db()
+
+
+initialize_database()
 
 from ui.upload_page import render  # noqa: E402
 
